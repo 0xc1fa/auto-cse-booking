@@ -1,16 +1,21 @@
 # CSE Booking Automation
 
 CSE Booking is an automated script designed to book slots on the CSE HKU website. It uses Playwright for browser automation and 2Captcha for solving CAPTCHA challenges.
+
 ## Installation
 
-1. Clone the repository:
+1. Fork the repository:
+   Navigate to the original repository [0xc1fa/auto-cse-booking](https://github.com/0xc1fa/auto-cse-booking) and click the "Fork" button in the top-right corner of the page.
+
+2. Clone your forked repository:
+   Replace <your-username> with your GitHub username:
 
    ```sh
-   git clone https://github.com/0xc1fa/auto-cse-booking.git
-   cd auto-cse-booking
+	git clone https://github.com/<your-username>/auto-cse-booking.git
+	cd auto-cse-booking
    ```
 
-2. Install dependencies using `pnpm`:
+3. Install dependencies using `pnpm`:
 
    ```sh
    npm install -g pnpm
