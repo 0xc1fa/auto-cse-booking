@@ -21,7 +21,8 @@ async function main() {
 		bookingConfig.omit &&
 		bookingConfig.omit.find(value => value === date.getDay())
 	) {
-		return;
+		console.log("Weekday in `omit`, skipping today...");
+		process.exit(0);
 	}
 
 	const formFiller = new CSEFormFiller(page);
@@ -37,6 +38,7 @@ async function main() {
 	await formFiller.clickSubmit();
 
 	browser.close();
+	process.exit(0);
 }
 
 main();
