@@ -6,8 +6,8 @@ CSE Booking is an automated script designed to book slots on the CSE HKU website
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/0xc1fa/cse-booking.git
-   cd cse-booking
+   git clone https://github.com/0xc1fa/auto-cse-booking.git
+   cd auto-cse-booking
    ```
 
 2. Install dependencies using `pnpm`:

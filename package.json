@@ -1,5 +1,5 @@
 {
-	"name": "cse-booking",
+	"name": "auto-cse-booking",
 	"version": "1.0.0",
 	"main": "index.ts",
 	"scripts": {
