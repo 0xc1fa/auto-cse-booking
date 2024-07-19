@@ -1,18 +1,7 @@
 import { Solver } from "@2captcha/captcha-solver";
 import { Page } from "playwright";
-
-export type Center = "cse-active" | "b-active";
-export type PersonalInfo = {
-	email: string;
-	name: string;
-	uid: string;
-};
-
-export type BookingInfo = {
-	center: Center;
-	date: Date;
-	session: 0 | 1 | 2;
-};
+import { Info } from "./types/Info";
+import { Center } from "./types/Center";
 
 export class CSEFormFiller {
 	private page: Page;
@@ -21,7 +10,7 @@ export class CSEFormFiller {
 		this.page = page;
 	}
 
-	async fillAll(items: PersonalInfo & BookingInfo) {
+	async fillAll(items: Info) {
 		await this.fillEmail(items.email);
 		await this.fillName(items.name);
 		await this.fillUid(items.uid);
