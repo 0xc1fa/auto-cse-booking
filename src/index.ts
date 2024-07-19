@@ -8,7 +8,6 @@ dotenv.config();
 
 async function main() {
 	const browser = await chromium.launch({
-		headless: false,
 		slowMo: 10,
 	});
 	const page = await browser.newPage();
