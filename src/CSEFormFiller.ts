@@ -21,28 +21,35 @@ export class CSEFormFiller {
 
 	async fillEmail(email: string) {
 		const selector = `#Email`;
-		return this.page.fill(selector, email);
+		await this.page.fill(selector, email);
+		console.log(`Filled email: ${email}`);
 	}
 
 	async fillName(name: string) {
 		const selector = `#FirstName`;
-		return this.page.fill(selector, name);
+		await this.page.fill(selector, name);
+		console.log(`Filled name: ${name}`);
 	}
 
 	async fillUid(uid: string) {
 		const selector = `#MemberID`;
-		return this.page.fill(selector, uid);
+		await this.page.fill(selector, uid);
+		console.log(`Filled UID: ${uid}`);
 	}
 
 	async fillCenter(centerId: Center) {
 		const selector = `#CenterID`;
-		switch (centerId) {
-			case "cse-active":
-				return this.page.selectOption(selector, "10001");
-			case "b-active":
-				return this.page.selectOption(selector, "10002");
-			default:
-				throw new Error("centerId not valid.");
+		try {
+			switch (centerId) {
+				case "cse-active":
+					return this.page.selectOption(selector, "10001");
+				case "b-active":
+					return this.page.selectOption(selector, "10002");
+				default:
+					throw new Error("centerId not valid.");
+			}
+		} finally {
+			console.log(`Filled center ID: ${centerId}`);
 		}
 	}
 
@@ -54,36 +61,43 @@ export class CSEFormFiller {
 			day: "2-digit",
 		}).format(date);
 
-		return this.page.selectOption(selector, formattedDate).catch(err => {
-			throw new Error("Invalid Date");
+		await this.page.selectOption(selector, formattedDate).catch(err => {
+			throw new Error("Invalid date");
 		});
+
+		console.log(`Filled date: ${formattedDate}`);
 	}
 
 	async fillSession(session: number) {
 		const selector = `#SessionTime`;
-		return this.page.selectOption(selector, { index: session });
+		await this.page.selectOption(selector, { index: session });
+		console.log(`Filled session: ${session}`);
 	}
 
 	async checkDeclaration() {
 		const selector = `#dataCollection`;
-		return this.page.evaluate(selector => {
+		await this.page.evaluate(selector => {
 			const checkbox = document.querySelector(selector) as HTMLInputElement;
 			if (!checkbox.checked) checkbox.click();
 		}, selector);
+		console.log(`Checked declaration`);
 	}
 
 	async solveRecaptcha(apiKey: string, pageUrl: string, siteKey: string) {
+		console.log("Started solving reCAPTCHA")
 		const solver = new Solver(apiKey);
 		const res = await solver.recaptcha({
 			pageurl: pageUrl,
 			googlekey: siteKey,
 		});
 
-		return this.page.evaluate(res => {
+		await this.page.evaluate(res => {
 			const responseElement = document.querySelector("#g-recaptcha-response");
 			if (!responseElement) throw new Error("g-recaptcha-response not found");
 			responseElement.innerHTML = res.data;
 		}, res);
+
+		console.log(`Solved reCAPTCHA: ${res.data}`);
 	}
 
 	async clickSubmit() {
