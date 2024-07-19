@@ -1,10 +1,16 @@
 import { chromium } from "playwright";
 import dotenv from "dotenv";
-import { CSEFormFiller } from "./CSEFormFiller";
+import { CSEFormFiller, PersonalInfo } from "./CSEFormFiller";
 
 dotenv.config();
 const pageUrl = "https://fcbooking.cse.hku.hk/Form/SignUp";
 const recaptchaSiteKey = "6Lf676AUAAAAAKNDRHuFKbmIAc4-u01jjj3nHMoc";
+
+const personalInfo: PersonalInfo = {
+	email: "testing@connect.hku.hk",
+	name: "test",
+	uid: "3035990000",
+};
 
 async function main() {
 	const browser = await chromium.launch({
@@ -15,14 +21,15 @@ async function main() {
 
 	await page.goto(pageUrl);
 
+	let date = new Date();
+	date.setDate(date.getDate() + 3);
+
 	const formFiller = new CSEFormFiller(page);
 	await formFiller.fillAll({
-		email: "testing@connect.hku.hk",
-		name: "test",
-		uid: "3035990000",
-		center: "cse-active",
-		date: new Date("2024/07/22"),
-		session: "10124",
+		...personalInfo,
+		center: "b-active",
+		date: date,
+		session: 0,
 	});
 	await formFiller.solveRecaptcha(
 		process.env.TWOCAPTCHA_API_KEY!,

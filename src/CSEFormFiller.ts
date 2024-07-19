@@ -2,13 +2,16 @@ import { Solver } from "@2captcha/captcha-solver";
 import { Page } from "playwright";
 
 export type Center = "cse-active" | "b-active";
-export type Info = {
+export type PersonalInfo = {
 	email: string;
 	name: string;
 	uid: string;
+};
+
+export type BookingInfo = {
 	center: Center;
 	date: Date;
-	session: string;
+	session: 0 | 1 | 2;
 };
 
 export class CSEFormFiller {
@@ -18,7 +21,7 @@ export class CSEFormFiller {
 		this.page = page;
 	}
 
-	async fillAll(items: Info) {
+	async fillAll(items: PersonalInfo & BookingInfo) {
 		await this.fillEmail(items.email);
 		await this.fillName(items.name);
 		await this.fillUid(items.uid);
@@ -67,9 +70,9 @@ export class CSEFormFiller {
 		});
 	}
 
-	async fillSession(session: string) {
+	async fillSession(session: number) {
 		const selector = `#SessionTime`;
-		return this.page.selectOption(selector, session);
+		return this.page.selectOption(selector, { index: session });
 	}
 
 	async checkDeclaration() {
