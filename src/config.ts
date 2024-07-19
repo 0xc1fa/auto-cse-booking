@@ -6,7 +6,7 @@ const bookingConfig: BookingConfig = {
 	uid: "3035690000",
 	center: "b-active",
 	session: 0,
-	omit: [0, 1, 6],
+	omit: [],
 } as const;
 
 export default bookingConfig;
