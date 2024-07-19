@@ -1,0 +1,29 @@
+name: Scheduled Job
+
+on:
+  schedule:
+    - cron: "5 4 * * *" # This cron expression means "At 04:05 AM (UTC) every day", which is 12:05 PM HKT
+  workflow_dispatch:
+
+jobs:
+  example-job:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.17.0"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run the booking script
+        run: pnpm start
