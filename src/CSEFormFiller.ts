@@ -1,33 +1,8 @@
-import { chromium, Page } from "playwright";
 import { Solver } from "@2captcha/captcha-solver";
-import dotenv from "dotenv";
+import { Page } from "playwright";
 
-dotenv.config();
-
-async function main() {
-	const browser = await chromium.launch({
-		headless: false,
-		slowMo: 10,
-	});
-	const page = await browser.newPage();
-
-	const formFiller = new CSEFormFiller(page);
-
-	await formFiller.gotoPage();
-	await formFiller.fillAll({
-		email: "testing@connect.hku.hk",
-		name: "test",
-		uid: "3035990000",
-		center: "cse-active",
-		date: new Date("2024/07/22"),
-		session: "10124",
-	});
-	await formFiller.solveRecaptcha(process.env.TWOCAPTCHA_API_KEY!);
-	await formFiller.clickSubmit();
-}
-
-type Center = "cse-active" | "b-active";
-type Info = {
+export type Center = "cse-active" | "b-active";
+export type Info = {
 	email: string;
 	name: string;
 	uid: string;
@@ -36,17 +11,11 @@ type Info = {
 	session: string;
 };
 
-class CSEFormFiller {
+export class CSEFormFiller {
 	private page: Page;
-	readonly pageUrl = "https://fcbooking.cse.hku.hk/Form/SignUp";
-	readonly recaptchaSiteKey = "6Lf676AUAAAAAKNDRHuFKbmIAc4-u01jjj3nHMoc";
 
 	constructor(page: Page) {
 		this.page = page;
-	}
-
-	async gotoPage() {
-		await this.page.goto(this.pageUrl);
 	}
 
 	async fillAll(items: Info) {
@@ -111,11 +80,11 @@ class CSEFormFiller {
 		}, selector);
 	}
 
-	async solveRecaptcha(apiKey: string) {
+	async solveRecaptcha(apiKey: string, pageUrl: string, siteKey: string) {
 		const solver = new Solver(apiKey);
 		const res = await solver.recaptcha({
-			pageurl: this.pageUrl,
-			googlekey: this.recaptchaSiteKey,
+			pageurl: pageUrl,
+			googlekey: siteKey,
 		});
 
 		return this.page.evaluate(res => {
@@ -129,5 +98,3 @@ class CSEFormFiller {
 		return this.page.click(`#sbmtBtn`);
 	}
 }
-
-main();
