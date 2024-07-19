@@ -44,7 +44,7 @@ The script is intended to run as a scheduled job on GitHub Actions. The GitHub A
 2. Set up secrets:
    In your GitHub repository, navigate to Settings > Secrets and variables > Actions, and add a new repository secret:
    - `TWOCAPTCHA_API_KEY`: Your 2Captcha API key.
-3. Ensure the environment is named "production":
-   The GitHub Actions workflow uses the environment named "production".
+3. Ensure the environment is named `production`:
+   The GitHub Actions workflow uses the environment named `production`.
 
 Once these steps are completed, the GitHub Actions workflow will automatically run the booking script based on the defined schedule.
