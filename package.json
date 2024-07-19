@@ -10,6 +10,9 @@
 	"license": "ISC",
 	"description": "",
 	"dependencies": {
+		"@2captcha/captcha-solver": "^1.0.4",
+		"@types/node": "^20.14.11",
+		"dotenv": "^16.4.5",
 		"playwright": "^1.45.2",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.5.3"

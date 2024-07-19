@@ -1,7 +1,14 @@
 import { chromium, Page } from "playwright";
+import { Solver } from "@2captcha/captcha-solver";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 async function main() {
-	const browser = await chromium.launch({ headless: false, slowMo: 100 });
+	const browser = await chromium.launch({
+		headless: false,
+		slowMo: 10,
+	});
 	const page = await browser.newPage();
 
 	const formFiller = new CSEFormFiller(page);
@@ -15,6 +22,8 @@ async function main() {
 		date: new Date("2024/07/22"),
 		session: "10124",
 	});
+	await formFiller.solveRecaptcha(process.env.TWOCAPTCHA_API_KEY!);
+	console.log("solved");
 }
 
 type Center = "cse-active" | "b-active";
@@ -36,8 +45,8 @@ class CSEFormFiller {
 		this.page = page;
 	}
 
-	gotoPage() {
-		return this.page.goto(this.pageUrl);
+	async gotoPage() {
+		await this.page.goto(this.pageUrl);
 	}
 
 	async fillAll(items: Info) {
@@ -47,7 +56,6 @@ class CSEFormFiller {
 		await this.fillCenter(items.center);
 		await this.fillDate(items.date);
 		await this.checkDeclaration();
-		await this.clickRecaptcha();
 	}
 
 	async fillEmail(email: string) {
@@ -97,19 +105,24 @@ class CSEFormFiller {
 
 	async checkDeclaration() {
 		const selector = `#dataCollection`;
-
-		await this.page.evaluate(() => {
-			const checkbox = document.querySelector(
-				`#dataCollection`
-			) as HTMLInputElement;
+		return this.page.evaluate(selector => {
+			const checkbox = document.querySelector(selector) as HTMLInputElement;
 			if (!checkbox.checked) checkbox.click();
-		});
+		}, selector);
 	}
 
-	async clickRecaptcha() {
-		const iframeElement = await this.page.$(`iframe[title="reCAPTCHA"]`);
-		const iframe = await iframeElement?.contentFrame();
-		await iframe?.click(`#rc-anchor-container`);
+	async solveRecaptcha(apiKey: string) {
+		const solver = new Solver(apiKey);
+		const res = await solver.recaptcha({
+			pageurl: this.pageUrl,
+			googlekey: this.recaptchaSiteKey,
+		});
+
+		return this.page.evaluate(res => {
+			const responseElement = document.querySelector("#g-recaptcha-response");
+			if (!responseElement) throw new Error("g-recaptcha-response not found");
+			responseElement.innerHTML = res.data;
+		}, res);
 	}
 }
 
