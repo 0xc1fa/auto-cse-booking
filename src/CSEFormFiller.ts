@@ -16,6 +16,7 @@ export class CSEFormFiller {
 		await this.fillUid(items.uid);
 		await this.fillCenter(items.center);
 		await this.fillDate(items.date);
+		await this.fillSession(items.session);
 		await this.checkDeclaration();
 	}
 
@@ -84,7 +85,7 @@ export class CSEFormFiller {
 	}
 
 	async solveRecaptcha(apiKey: string, pageUrl: string, siteKey: string) {
-		console.log("Started solving reCAPTCHA")
+		console.log("Started solving reCAPTCHA");
 		const solver = new Solver(apiKey);
 		const res = await solver.recaptcha({
 			pageurl: pageUrl,
