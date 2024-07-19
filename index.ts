@@ -23,7 +23,7 @@ async function main() {
 		session: "10124",
 	});
 	await formFiller.solveRecaptcha(process.env.TWOCAPTCHA_API_KEY!);
-	console.log("solved");
+	await formFiller.clickSubmit();
 }
 
 type Center = "cse-active" | "b-active";
@@ -123,6 +123,10 @@ class CSEFormFiller {
 			if (!responseElement) throw new Error("g-recaptcha-response not found");
 			responseElement.innerHTML = res.data;
 		}, res);
+	}
+
+	async clickSubmit() {
+		return this.page.click(`#sbmtBtn`);
 	}
 }
 
