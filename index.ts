@@ -79,7 +79,7 @@ class CSEFormFiller {
 
 	async fillDate(date: Date) {
 		const selector = `#DateList`;
-		var formattedDate = new Intl.DateTimeFormat("en-us", {
+		const formattedDate = new Intl.DateTimeFormat("zh-CN", {
 			year: "numeric",
 			month: "2-digit",
 			day: "2-digit",
