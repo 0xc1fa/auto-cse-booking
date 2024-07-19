@@ -1,0 +1,15 @@
+{
+	"version": "1.0.0",
+	"configurations": [
+		{
+			"name": "Run pnpm start",
+			"type": "node",
+			"request": "launch",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": ["start"],
+			"cwd": "${workspaceRoot}",
+			"internalConsoleOptions": "openOnSessionStart",
+			"skipFiles": ["<node_internals>/**", "node_modules/**"]
+		}
+	]
+}
