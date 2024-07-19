@@ -25,5 +25,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: "Create env file"
+        run: |
+          touch .env
+          echo TWOCAPTCHA_API_KEY=${{ secrets.TWOCAPTCHA_API_KEY }} >> .env
+          cat .env
+
       - name: Run the booking script
         run: pnpm start
