@@ -12,25 +12,18 @@ async function main() {
 		name: "test",
 		uid: "3035990000",
 		center: "cse-active",
-		date: "2024/07/22",
+		date: new Date("2024/07/22"),
 		session: "10124",
 	});
 }
 
-type Year = `${number}${number}${number}${number}`;
-type Month = `0${0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9}` | `1${0 | 1 | 2}`;
-type Day =
-	| `0${0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9}`
-	| `${1 | 2}${number}`
-	| `3${0 | 1}`;
-type DateString = `${Year}/${Month}/${Day}`;
 type Center = "cse-active" | "b-active";
 type Info = {
 	email: string;
 	name: string;
 	uid: string;
 	center: Center;
-	date: DateString;
+	date: Date;
 	session: string;
 };
 
@@ -84,9 +77,15 @@ class CSEFormFiller {
 		}
 	}
 
-	async fillDate(date: DateString) {
+	async fillDate(date: Date) {
 		const selector = `#DateList`;
-		return this.page.selectOption(selector, date).catch(err => {
+		var formattedDate = new Intl.DateTimeFormat("en-us", {
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+		}).format(date);
+
+		return this.page.selectOption(selector, formattedDate).catch(err => {
 			throw new Error("Invalid Date");
 		});
 	}
