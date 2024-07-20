@@ -1,55 +1,70 @@
 # CSE Booking Automation
 
-CSE Booking is an automated script designed to book slots on the CSE HKU website. It uses Playwright for browser automation and 2Captcha for solving CAPTCHA challenges.
+CSE Booking is an automated script designed to reserve slots on the HKU CSE website.
 
-## Installation
+## Enable Automation in Your Account
 
-1. Fork the repository:
+1. Fork this repository
+   
    Navigate to the original repository [0xc1fa/auto-cse-booking](https://github.com/0xc1fa/auto-cse-booking) and click the "Fork" button in the top-right corner of the page.
 
-2. Clone your forked repository:
-   Replace <your-username> with your GitHub username:
+2. Set up GitHub repository secrets
+   
+   In your forked repository, navigate to Settings > Secrets and variables (under Security) > Actions, and add a new repository secret:
+   
+   - `TWOCAPTCHA_API_KEY`: Your 2Captcha API key, obtainable from [2Captcha](https://2captcha.com).
 
+3. Clone your forked repository
    ```sh
-	git clone https://github.com/<your-username>/auto-cse-booking.git
-	cd auto-cse-booking
+   git clone https://github.com/<your-username>/auto-cse-booking.git
+   cd auto-cse-booking
    ```
 
-3. Install dependencies using `pnpm`:
+4. Configure the booking setting in `src/config.ts` according to your needs:
+   ```ts
+   const bookingConfig: BookingConfig = {
+       name: "<your-name>",         // e.g. "Chan Tai Man"
+       email: "<your-email>",       // e.g. "chantaiman@connect.hku.hk
+       uid: "<your-uid>",           // e.g. "3035690000"
+       center: "<center-to-book>",  // "cse-active" or "b-active"
+       session: 0,                  // 0, 1, or 2
+       omit: [0, 1, 6],             // Days to omit: 0=Sunday, 1=Monday, ...
+   } as const;
+   ```
+
+5. Commit and push your configurations:
+   ```sh
+   git add src/config.ts
+   git commit -m "Update configuration"
+   git push origin main
+   ```
+
+6. Done. The GitHub Actions workflow is set to run the booking script daily at 12:05 PM HKT.
+
+## Disable the Scheduled Job
+
+To disable the scheduled job, go to Actions > Scheduled Job in your GitHub repository, click the three dots in the top-right corner, and select "Disable workflow."
+
+To re-enable, click "Enable workflow" on the same page.
+
+## Installation for Local Testing and Running
+
+1. Install dependencies using `pnpm` (for local testing)
 
    ```sh
    npm install -g pnpm
    pnpm install
    ```
 
-## Configuration
+2. To disable headless mode for testing, edit `src/index.ts`.
+   ```ts
+   const browser = await chromium.launch({
+     slowMo: 10,
+     headless: false,
+   });
+   ```
 
-The configuration for booking is located in `src/config.ts`. Modify the fields according to your needs:
-```ts
-const bookingConfig: BookingConfig = {
-  name: "your_name",
-  email: "your_email",
-  uid: "your_uid",
-  center: "your_preferred_center",
-  session: 0, // 0, 1, or 2 for different session times
-  omit: [0, 1, 6], // Days to omit: 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-} as const;
-
-export default bookingConfig;
-```
-
-## Usage
-
-The script is intended to run as a scheduled job on GitHub Actions. The GitHub Actions workflow is already configured to run the booking script daily at 04:05 AM UTC (12:05 PM HKT).
-
-## Steps to Enable GitHub Actions
-
-1. Push your configuration to GitHub:
-   Ensure your changes in `src/config.ts` are committed and pushed to your GitHub repository.
-2. Set up secrets:
-   In your GitHub repository, navigate to Settings > Secrets and variables > Actions, and add a new repository secret:
-   - `TWOCAPTCHA_API_KEY`: Your 2Captcha API key.
-3. Ensure the environment is named `production`:
-   The GitHub Actions workflow uses the environment named `production`.
-
-Once these steps are completed, the GitHub Actions workflow will automatically run the booking script based on the defined schedule.
+3. Start the automation
+   ```sh
+   pnpm start
+   ```
